@@ -2,10 +2,39 @@ import { useState } from "react";
 import reactLogo from "./assets/react.svg";
 import { invoke } from "@tauri-apps/api/core";
 import "./App.css";
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { Navbar } from './components/Navbar';
+import { SubLayout } from './layouts/SubLayout';
+import { InternalSensors } from './pages/maintenance/InternalSensors';;
+import { RealTimeChart } from './components/RealTimeChart';
+import { Home } from './pages/Home';
+
+// Componente genérico para rellenar vistas
+const PlaceholderPage = ({ title }) => (
+  <div className="p-6 bg-base-200 rounded-box border border-base-300">
+    <h2 className="text-xl font-bold mb-4">{title}</h2>
+    <div className="grid grid-cols-2 gap-4">
+      <div className="stats shadow bg-base-100">
+        <div className="stat">
+          <div className="stat-title">Paquetes</div>
+          <div className="stat-value text-primary">2.4k</div>
+        </div>
+      </div>
+    </div>
+  </div>
+);
 
 function App() {
   const [greetMsg, setGreetMsg] = useState("");
   const [name, setName] = useState("");
+
+  // Definimos las sub-rutas para Maintenance
+  const maintenanceSubRoutes = [
+    { name: 'Sensores Internos', path: 'internal' },
+    { name: 'Sensores Externos', path: 'external' },
+    { name: 'Actuadores', path: 'actuators' },
+    { name: 'Registros del Sistema', path: 'logs' }, // Añadimos una 4ta para completar el diseño
+  ];
 
   async function greet() {
     // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
@@ -13,39 +42,49 @@ function App() {
   }
 
   return (
-    <main className="container">
-      <h1>Welcome to Tauri + React</h1>
+    <BrowserRouter>
+      <div className="min-h-screen bg-base-100 text-base-content font-sans">
+        <Navbar />
+        
+       {/* Eliminamos 'max-w-6xl' y 'mx-auto' para pegar todo a la izquierda */}
+        <main className="pt-16 flex-1 w-full overflow-hidden flex flex-col">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            {/* RUTA 1: MONITOR */}
+            <Route path="/monitor" element={<SubLayout mainPath="monitor" />}>
+              <Route path="general" element={<PlaceholderPage title="Dashboard Monitor" />} />
+              <Route path="charts" element={<RealTimeChart />} />
+              <Route path="terminal" element={<PlaceholderPage title="Consola Serial" />} />
+              <Route path="settings" element={<PlaceholderPage title="Params de Visualización" />} />
+              <Route index element={<Navigate to="general" />} />
+            </Route>
 
-      <div className="row bg-black/100 rounded-lg p-4 mb-4">
-        <a href="https://vite.dev" target="_blank">
-          <img src="/vite.svg" className="logo vite" alt="Vite logo" />
-        </a>
-        <a href="https://tauri.app" target="_blank">
-          <img src="/tauri.svg" className="logo tauri" alt="Tauri logo" />
-        </a>
-        <button className="btn btn-primary">hey!!</button>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+           {/* RUTA DE MAINTENANCE (MAINTAINER) */}
+            <Route 
+              path="/config" 
+              element={<SubLayout mainPath="config" subRoutes={maintenanceSubRoutes} />}
+            >
+              <Route path="internal" element={<InternalSensors />} />
+              <Route path="external" element={<div className="p-4">Vista: External Sensors (Coming Soon)</div>} />
+              <Route path="actuators" element={<div className="p-4">Vista: Actuators (Coming Soon)</div>} />
+              <Route path="logs" element={<div className="p-4">Vista: System Logs (Coming Soon)</div>} />
+              <Route index element={<Navigate to="internal" />} />
+            </Route>
+
+            {/* RUTA 3: ANÁLISIS */}
+            <Route path="/analisis" element={<SubLayout mainPath="analisis" />}>
+              <Route path="general" element={<PlaceholderPage title="Resumen de Datos" />} />
+              <Route path="charts" element={<PlaceholderPage title="Históricos de Sesión" />} />
+              <Route path="terminal" element={<PlaceholderPage title="Análisis de Protocolo" />} />
+              <Route path="settings" element={<PlaceholderPage title="Exportar CSV/JSON" />} />
+              <Route index element={<Navigate to="general" />} />
+            </Route>
+
+            <Route path="/" element={<Navigate to="/" />} />
+          </Routes>
+        </main>
       </div>
-      <p>Click on the Tauri, Vite, and React logos to learn more.</p>
-
-      <form
-        className="row"
-        onSubmit={(e) => {
-          e.preventDefault();
-          greet();
-        }}
-      >
-        <input
-          id="greet-input"
-          onChange={(e) => setName(e.currentTarget.value)}
-          placeholder="Enter a name..."
-        />
-        <button type="submit">Greet</button>
-      </form>
-      <p>{greetMsg}</p>
-    </main>
+    </BrowserRouter>
   );
 }
 
