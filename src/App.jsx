@@ -16,13 +16,14 @@ function App() {
     <main className="container">
       <h1>Welcome to Tauri + React</h1>
 
-      <div className="row">
+      <div className="row bg-black/100 rounded-lg p-4 mb-4">
         <a href="https://vite.dev" target="_blank">
           <img src="/vite.svg" className="logo vite" alt="Vite logo" />
         </a>
         <a href="https://tauri.app" target="_blank">
           <img src="/tauri.svg" className="logo tauri" alt="Tauri logo" />
         </a>
+        <button className="btn btn-primary">hey!!</button>
         <a href="https://react.dev" target="_blank">
           <img src={reactLogo} className="logo react" alt="React logo" />
         </a>
