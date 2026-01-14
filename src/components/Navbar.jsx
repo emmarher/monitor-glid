@@ -1,4 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
+import { ThemeSelector } from './ThemeSelector'; // Importar el nuevo componente
 
 export function Navbar() {
   const location = useLocation();
@@ -61,6 +62,7 @@ export function Navbar() {
 
       {/* SECCIÓN DERECHA: Status y Perfil */}
       <div className="flex-1 flex justify-end items-center gap-4">
+        <ThemeSelector /> {/* Incluir el selector de tema aquí */}
         <div className="flex items-center gap-2 px-3 py-1 border border-green-200 bg-green-50 rounded-full">
           <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
           <span className="text-[11px] font-bold text-green-700 uppercase tracking-wider">
