@@ -6,8 +6,8 @@ import {
 } from 'lucide-react';
 
 const SensorCard = ({ title, children, icon: Icon }) => (
-  /* CAMBIO: bg-base-100 en lugar de bg-white, border-base-300 en lugar de slate-200 */
-  <div className="bg-base-100 border border-base-300 rounded-xl p-4 shadow-sm hover:border-primary transition-all duration-300 group">
+  /* CAMBIO: bg-base-200 en lugar de bg-white, border-base-300 en lugar de slate-200 */
+  <div className="bg-base-200 border border-base-300 rounded-xl p-4 shadow-sm hover:border-primary transition-all duration-300 group">
     <div className="flex justify-between items-start mb-3">
       <div className="flex items-center gap-2">
         {Icon && <Icon size={16} className="text-primary" />}

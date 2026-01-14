@@ -13,7 +13,7 @@
   --color-base-200: var(--base-200);
   --color-base-300: var(--base-300);
   --color-base-400: var(--base-400);
-  --color-base-500: var(--base-50); /* O la variable que prefieras */
+  --color-base-500: var(--base-500); /* O la variable que prefieras */
   --color-base-600: var(--base-600);
   --color-base-700: var(--base-700);
   --color-base-800: var(--base-800);
@@ -23,15 +23,16 @@
 :root {
   /* Tus colores personalizados para modo Light */
   --color-primary: #3b82f6;
-  --color-base-100: #f8fafc;
-  --color-base-200: #f1f5f9;
-  --color-base-300: #e2e8f0;
-  --color-base-400: #94a3b8;
-  --color-base-500: #64748b;
-  --color-base-600: #475569;
-  --color-base-700: #334155;
-  --color-base-800: #1e293b;
-  --color-base-900: #0f172a;
+  --base-50: #f8fafc;
+  --base-100: #f1f5f9;
+  --base-200: #e2e8f0;
+  --base-300: #cbd5e1;
+  --base-400: #94a3b8;
+  --base-500: #64748b; /* El gris medio que buscas */
+  --base-600: #475569;
+  --base-700: #334155;
+  --base-800: #1e293b;
+  --base-900: #0f172a;
   /* Sombra estándar para modo Light (Gris suave) */
   --shadow-sm: 0 1px 2px 0 rgba(15, 23, 42, 0.05);
   --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.1), 0 2px 4px -2px rgba(15, 23, 42, 0.1);

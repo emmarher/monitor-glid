@@ -15,10 +15,10 @@ export function SubLayout({ mainPath, subRoutes }) {
     <div className="flex flex-row h-[calc(100vh-80px)] gap-6">
       {/* SIDEBAR IZQUIERDO */}
       <aside className="w-64 flex-none">
-        <div className="bg-white border border-slate-200 rounded-3xl h-full p-4 shadow-sm flex flex-col gap-2">
+        <div className="bg-base-100 border border-base-300 rounded-3xl h-full p-4 shadow-sm flex flex-col gap-2">
           <div className="px-4 py-2 mb-2">
-            <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">
-              Navigation
+            <h3 className="text-[10px] font-bold text-base-500 uppercase tracking-[0.2em]">
+              Navegacion
             </h3>
           </div>
           
@@ -32,13 +32,13 @@ export function SubLayout({ mainPath, subRoutes }) {
                   to={`/${mainPath}/${route.path}`}
                   className={`flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all text-sm ${
                     isActive 
-                      ? 'bg-blue-50 text-blue-600 border border-blue-100 shadow-sm' 
-                      : 'text-slate-500 hover:bg-slate-50 hover:text-slate-800'
+                      ? 'bg-base-100 text-base-800 border border-base-600 shadow-sm' 
+                      : 'text-base-500 hover:bg-base-100 hover:text-base-800'
                   }`}
                 >
                   <Icon size={18} />
                   {/* Indicador visual lateral si está activo */}
-                  {isActive && <div className="w-1 h-4 bg-blue-600 rounded-full" />}
+                  {isActive && <div className="w-1 h-4 bg-base-600 rounded-full" />}
                   {route.name}
                 </Link>
               );
