@@ -16,7 +16,7 @@ export function Navbar() {
       
       {/* SECCIÓN IZQUIERDA: Logo */}
       <div className="flex-1 flex flex-col items-start leading-tight">
-        <span className="text-lg font-black tracking-tighter text-slate-800">
+        <span className="text-lg font-black tracking-tighter base=200">
           GLIDER CONTROL
         </span>
         <span className="text-[10px] font-bold text-blue-500 tracking-widest uppercase">
@@ -25,11 +25,11 @@ export function Navbar() {
       </div>
 
       {/* SECCIÓN CENTRAL: Control Segmentado con HOME incluido */}
-      <div className="flex-none bg-slate-100 p-1 rounded-xl border border-slate-200 shadow-inner flex items-center">
+      <div className="flex-none bg-base-100 p-1 rounded-xl border border-base-300 shadow-inner flex items-center">
         <Link 
           to="/" 
-          className={`px-4 py-1.5 rounded-lg text-sm font-bold transition-all ${
-            isActive('/') ? 'bg-white text-slate-800 shadow-md' : 'text-slate-500 hover:text-slate-700'
+          className={`px-4 py-1.5 rounded-lg text-sm font-bold transition-all  border-base-300 ${
+            isActive('/') ? 'bg-base-200 text-base-800 shadow-sm shadow-glow' : 'text-base-500 hover:text-base-700'
           }`}
         >
           Inicio
@@ -37,7 +37,7 @@ export function Navbar() {
         <Link 
           to="/config" 
           className={`px-4 py-1.5 rounded-lg text-sm font-bold transition-all ${
-            isActive('/config') ? 'bg-white text-slate-800 shadow-md' : 'text-slate-500 hover:text-slate-700'
+            isActive('/config') ? 'bg-base-200 text-base-800 shadow-md shadow-glow' : 'text-base-500 hover:text-base-700'
           }`}
         >
           Mantenimiento
@@ -45,7 +45,7 @@ export function Navbar() {
         <Link 
           to="/analisis" 
           className={`px-4 py-1.5 rounded-lg text-sm font-bold transition-all ${
-            isActive('/analisis') ? 'bg-white text-slate-800 shadow-md' : 'text-slate-500 hover:text-slate-700'
+            isActive('/analisis') ? 'bg-base-200 text-base-800 shadow-md shadow-glow' : 'text-base-500 hover:text-base-700'
           }`}
         >
           Simulacion
@@ -53,7 +53,7 @@ export function Navbar() {
         <Link 
           to="/monitor" 
           className={`px-4 py-1.5 rounded-lg text-sm font-bold transition-all ${
-            isActive('/monitor') ? 'bg-white text-slate-800 shadow-md' : 'text-slate-500 hover:text-slate-700'
+            isActive('/monitor') ? 'bg-base-200 text-base-800 shadow-md shadow-glow' : 'text-base-500 hover:text-base-700'
           }`}
         >
           Mision

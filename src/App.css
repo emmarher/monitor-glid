@@ -1,2 +1,76 @@
 @import "tailwindcss";
+
+/* Importar el plugin de DaisyUI v4 compatible */
 @plugin "daisyui";
+
+/* Configuración de tus temas directamente en CSS (Estilo v4) */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+@theme {
+  /* Esto le dice a Tailwind que genere text-base-50, bg-base-100, etc. */
+  --color-base-50: var(--base-50);
+  --color-base-100: var(--base-100);
+  --color-base-200: var(--base-200);
+  --color-base-300: var(--base-300);
+  --color-base-400: var(--base-400);
+  --color-base-500: var(--base-50); /* O la variable que prefieras */
+  --color-base-600: var(--base-600);
+  --color-base-700: var(--base-700);
+  --color-base-800: var(--base-800);
+  --color-base-900: var(--base-900);
+}
+
+:root {
+  /* Tus colores personalizados para modo Light */
+  --color-primary: #3b82f6;
+  --color-base-100: #f8fafc;
+  --color-base-200: #f1f5f9;
+  --color-base-300: #e2e8f0;
+  --color-base-400: #94a3b8;
+  --color-base-500: #64748b;
+  --color-base-600: #475569;
+  --color-base-700: #334155;
+  --color-base-800: #1e293b;
+  --color-base-900: #0f172a;
+  /* Sombra estándar para modo Light (Gris suave) */
+  --shadow-sm: 0 1px 2px 0 rgba(15, 23, 42, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.1), 0 2px 4px -2px rgba(15, 23, 42, 0.1);
+  /* Sombra interna Light: Efecto de hundido gris */
+  --shadow-inner: inset 0 2px 4px 0 rgba(15, 23, 42, 0.08);
+
+  /* En Light: La sombra es el color gris por defecto de Tailwind */
+  --glow-color: rgb(0 0 0 / 0.1);
+}
+
+[data-theme="dark"] {
+  /* Tus colores personalizados para modo Dark */
+  --color-base-50:  #1e293b; /* El más claro en Dark */
+  --color-base-100: #0f172a; /* Fondo principal */
+  --color-base-200: #0a0f1d; /* Fondo secundario más profundo */
+  --color-base-300: #020617; /* El más oscuro (negro casi total) */
+  
+  /* Escala de grises para textos en Dark */
+  --color-base-400: #334155;
+  --color-base-500: #475569;
+  --color-base-600: #94a3b8;
+  --color-base-700: #cbd5e1;
+  --color-base-800: #e2e8f0;
+  --color-base-900: #f8fafc; /* Texto más brillante */
+  /* INVERSA DE SHADOW: En lugar de sombra negra, usamos un resplandor (Glow) */
+  /* Esto hará que todas las clases 'shadow-sm' y 'shadow-md' brillen en azul/blanco sutil */
+  --shadow-sm: 0 0 15px rgba(232, 242, 255, 0.774);
+  --shadow-md:box-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #0ff;
+  /* Sombra interna Dark: Profundidad en el vacío */
+  /* Usamos un negro más puro para que el fondo base-100 parezca tener relieve hacia adentro */
+  --shadow-inner: inset 0 4px 10px 0 rgba(255, 255, 255, 0.8);
+
+  --glow-color: rgb(59 130 246 / 0.5);
+  
+  
+}
+
+/* Esta clase sobreescribe el color de la sombra de Tailwind */
+.shadow-glow {
+  --tw-shadow-color: var(--glow-color) !important;
+  shadow-color: var(--glow-color) !important; /* Para compatibilidad v4 */
+}

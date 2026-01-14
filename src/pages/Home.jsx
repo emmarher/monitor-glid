@@ -6,13 +6,13 @@ export function Home() {
   return (
     <div className="flex flex-col gap-8 animate-in fade-in duration-700">
       {/* HERO SECTION */}
-      <div className="text-center py-10 bg-slate-50 rounded-3xl border border-slate-200 shadow-sm">
+      <div className="text-center py-10 bg-base-200 rounded-3xl border border-base-300 shadow-sm">
         <img 
           src="/cidesi.jpg" 
           alt="Mission Control Logo" 
-          className="mx-auto h-12 w-auto mb-6 drop-shadow-sm"
+          className="mx-auto h-12 w-auto mb-6 drop-shadow-sm rounded-lg"
         />
-        <h1 className="text-5xl font-black text-slate-800 tracking-tighter mb-2">
+        <h1 className="text-5xl font-black  text-base-content tracking-tighter mb-2">
           Glider Control
         </h1>
         <p className="text-slate-500 font-medium uppercase tracking-[0.2em] text-lg">
@@ -24,13 +24,13 @@ export function Home() {
       {/* QUICK START CARDS */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Card UART */}
-        <div className="card bg-base-100 border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+        <div className="card bg-base-200 border border-base-200 shadow-sm hover:shadow-md transition-shadow">
           <div className="card-body">
             <div className="flex justify-between items-start">
-              <h2 className="card-title text-slate-700">Conexión Serial</h2>
+              <h2 className="card-title text-base-700">Conexión Serial</h2>
               <div className="badge badge-outline text-[10px] font-bold">UART</div>
             </div>
-            <p className="text-sm text-slate-500">Configure COM ports and 115200 baud rate transmission.</p>
+            <p className="text-sm text-base-500">Configure COM ports and 115200 baud rate transmission.</p>
             <div className="card-actions justify-end mt-4">
               <button 
                 onClick={() => navigate('/config/general')}
@@ -43,13 +43,13 @@ export function Home() {
         </div>
 
         {/* Card WiFi */}
-        <div className="card bg-base-100 border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+        <div className="card bg-base-200 border border-base-200 shadow-sm hover:shadow-md transition-shadow">
           <div className="card-body">
             <div className="flex justify-between items-start">
-              <h2 className="card-title text-slate-700">Wireless Link</h2>
+              <h2 className="card-title text-base-700">Wireless Link</h2>
               <div className="badge badge-outline text-[10px] font-bold">WIFI</div>
             </div>
-            <p className="text-sm text-slate-500">Connect via TCP/UDP for long-range data monitoring.</p>
+            <p className="text-sm text-base-500">Connect via TCP/UDP for long-range data monitoring.</p>
             <div className="card-actions justify-end mt-4">
               <button 
                 onClick={() => navigate('/monitor/general')}
