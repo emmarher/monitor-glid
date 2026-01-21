@@ -12,7 +12,7 @@ const SensorCard = ({ title, children, icon: Icon }) => (
       <div className="flex items-center gap-2">
         {Icon && <Icon size={16} className="text-primary" />}
         {/* CAMBIO: text-base-content con opacidad para el título */}
-        <h3 className="text-[11px] font-bold text-base-content/70 uppercase tracking-wider">{title}</h3>
+        <h5 className="text-[11px] font-bold text-base-content/70 uppercase tracking-wider">{title}</h5>
       </div>
       <div className="w-1.5 h-1.5 rounded-full bg-success shadow-[0_0_8px_rgba(34,197,94,0.4)]"></div>
     </div>
@@ -26,7 +26,7 @@ const ValueLine = ({ label, value, unit, color = "text-base-content" }) => (
   <div className="flex items-baseline gap-2">
     {/* CAMBIO: text-base-content/50 para etiquetas secundarias */}
     {label && <span className="text-[10px] text-base-content/50 font-mono w-10">{label}:</span>}
-    <span className={`text-xl font-black font-mono tracking-tighter ${color}`}>{value}</span>
+    <span className={`text-md font-black font-mono tracking-tighter ${color}`}>{value}</span>
     <span className="text-[10px] font-bold text-base-content/40 uppercase">{unit}</span>
   </div>
 );
@@ -75,7 +75,7 @@ export function InternalSensors() {
           <ValueLine value="34.81" unit="mS/cm" />
         </SensorCard>
 
-        <SensorCard title="Compás" icon={Compass}>
+        <SensorCard title="IMU (Orientación)" icon={Compass}>
           <div className="grid grid-cols-3 gap-1 mt-1">
             <div className="text-center">
               <p className="text-[8px] font-bold text-base-content/50">PITCH</p>

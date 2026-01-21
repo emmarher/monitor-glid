@@ -15,7 +15,7 @@ export function TerminalFooter() {
   }, [logs]);
 
   return (
-    <footer className="h-32 bg-base-300/50 border-t border-base-300 flex flex-col overflow-hidden">
+    <footer className="h-42 bg-base-300/50 border-t border-base-300 flex flex-col overflow-hidden">
       {/* Barra de estado del Terminal */}
       <div className="flex justify-between items-center px-4 py-1 bg-base-300 border-b border-base-300">
         <div className="flex items-center gap-4">
@@ -39,8 +39,8 @@ export function TerminalFooter() {
       >
         {logs.map((log) => (
           <div key={log.id} className="flex gap-3 border-b border-base-content/5 py-0.5">
-            <span className="text-base-content/30 shrink-0">[{new Date().toLocaleTimeString()}]</span>
-            <span className={log.type === 'rx' ? 'text-success/80' : 'text-primary'}>
+            <span className="text-base-content/80 shrink-0">[{new Date().toLocaleTimeString()}]</span>
+            <span className={log.type === 'rx' ? 'text-content' : 'text-primary'}>
               {log.type === 'rx' ? '>> ' : ':: '}
               {log.msg}
             </span>

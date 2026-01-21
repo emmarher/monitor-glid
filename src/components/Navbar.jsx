@@ -44,6 +44,7 @@ export function Navbar() {
         </Link>
         <Link 
           to="/analisis" 
+          disabled
           className={`px-4 py-1.5 rounded-lg text-sm font-bold transition-all ${
             isActive('/analisis') ? 'bg-base-200 text-base-800 shadow-md shadow-glow' : 'text-base-500 hover:text-base-700'
           }`}
