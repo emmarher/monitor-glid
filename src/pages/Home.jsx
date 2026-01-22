@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Cpu, Activity, Wifi, Terminal, Battery, Thermometer, Gauge, Anchor, Send } from 'lucide-react';
+import { Cpu, Activity, Wifi, Terminal, Battery, Thermometer, Gauge, Anchor, Send, RefreshCw } from 'lucide-react';
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 
@@ -11,14 +11,29 @@ export function Home() {
   const [isConnected, setIsConnected] = useState(false);
   const [messages, setMessages] = useState([]);
   const [command, setCommand] = useState("");
+  const [availablePorts, setAvailablePorts] = useState([]);
+  const [selectedPort, setSelectedPort] = useState("");
   const scrollRef = useRef(null);
 
-  // Auto-scroll para la terminal cuando llegan mensajes
+  // Auto-scroll para la terminal
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [messages]);
+
+  // --- ESCANEO DE PUERTOS COM (UART) ---
+  const scanPorts = async () => {
+    try {
+      const ports = await invoke("get_available_ports");
+      setAvailablePorts(ports);
+      if (ports.length > 0 && !selectedPort) {
+        setSelectedPort(ports[0]);
+      }
+    } catch (err) {
+      console.error("Error al escanear puertos:", err);
+    }
+  };
 
   // --- LÓGICA DE EVENTOS TAURI (RUST -> JS) ---
   useEffect(() => {
@@ -38,33 +53,30 @@ export function Home() {
     };
 
     setupListeners();
+    scanPorts();
+    
+    // Intervalo para actualizar la lista de puertos automáticamente
+    const portInterval = setInterval(scanPorts, 5000);
 
     return () => {
       if (unlistenRaw) unlistenRaw();
       if (unlistenStatus) unlistenStatus();
+      clearInterval(portInterval);
     };
   }, []);
 
-  // --- FUNCIONES DE AYUDA ---
+  // --- FUNCIONES DE ACCIÓN ---
   const addMessage = (type, text) => {
     const time = new Date().toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
     setMessages(prev => [...prev, { time, type, text }]);
   };
 
-
   const sendMessage = async (e) => {
-    // Evitar que la página se recargue si se usa dentro de un form
     if (e) e.preventDefault();
-
     if (command.trim() && isConnected) {
       try {
-        // Llamamos a la función de Rust que definimos antes
         await invoke("send_command", { cmd: command });
-
-        // Añadimos a nuestra terminal visual lo que enviamos (TX)
         addMessage("TX", command);
-
-        // Limpiamos el input
         setCommand("");
       } catch (err) {
         addMessage("ERROR", `Fallo al enviar: ${err}`);
@@ -74,7 +86,7 @@ export function Home() {
 
   const connectWiFi = async () => {
     try {
-      addMessage("SYSTEM", "Solicitando apertura de socket a Rust...");
+      addMessage("SYSTEM", "Iniciando WebSocket en Rust...");
       await invoke("start_wifi_session");
     } catch (err) {
       addMessage("ERROR", `Fallo en el backend: ${err}`);
@@ -97,8 +109,9 @@ export function Home() {
         </div>
 
         <div className="flex items-center gap-4 mt-4 md:mt-0">
-          <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border transition-all ${isConnected ? 'bg-success/10 border-success/20 text-success' : 'bg-error/10 border-error/20 text-error'
-            }`}>
+          <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border transition-all ${
+            isConnected ? 'bg-success/10 border-success/20 text-success' : 'bg-error/10 border-error/20 text-error'
+          }`}>
             <div className={`w-1.5 h-1.5 rounded-full ${isConnected ? 'bg-success animate-pulse' : 'bg-error'}`}></div>
             <span className="text-[10px] font-black uppercase">
               {isConnected ? 'Sistema Conectado' : 'Sistema Desconectado'}
@@ -112,9 +125,11 @@ export function Home() {
 
         {/* COLUMNA IZQUIERDA: ESTADO Y ACCIONES */}
         <div className="lg:col-span-4 flex flex-col gap-3">
+          
+          {/* Panel de Telemetría */}
           <div className="bg-base-100 rounded-2xl border border-base-300 p-4 shadow-sm">
             <div className="flex items-center gap-2 mb-2 border-b border-base-200 pb-2">
-              <Activity size={28} className="text-primary" />
+              <Activity size={20} className="text-primary" />
               <h2 className="text-[11px] font-black uppercase tracking-wider">Estado del Sistema</h2>
             </div>
             <div className="space-y-1">
@@ -124,12 +139,12 @@ export function Home() {
                 { label: 'Presión', val: isConnected ? '1013 mbar' : '-- mbar', icon: Gauge },
                 { label: 'Profundidad', val: isConnected ? '0.0 m' : '-- m', icon: Anchor },
               ].map((item, i) => (
-                <div key={i} className="flex justify-between items-center group">
+                <div key={i} className="flex justify-between items-center group py-1">
                   <div className="flex items-center gap-2">
-                    <item.icon size={22} className="text-base-400" />
-                    <span className="text-lg text-base-500 font-medium">{item.label}</span>
+                    <item.icon size={18} className="text-base-400" />
+                    <span className="text-sm text-base-500 font-medium">{item.label}</span>
                   </div>
-                  <span className={`text-lg font-mono font-bold transition-colors ${isConnected ? 'text-primary' : 'text-base-400'}`}>
+                  <span className={`text-sm font-mono font-bold transition-colors ${isConnected ? 'text-primary' : 'text-base-400'}`}>
                     {item.val}
                   </span>
                 </div>
@@ -137,27 +152,61 @@ export function Home() {
             </div>
           </div>
 
+          {/* Panel de Conexión Dual */}
           <div className="bg-base-100 rounded-2xl border border-base-300 p-5 shadow-sm">
             <h2 className="text-sm font-bold mb-1">Conexión del Planeador</h2>
             <p className="text-[10px] text-base-500 mb-4 font-medium uppercase tracking-tight">Seleccione método de enlace</p>
 
-            <div className="grid grid-cols-2 gap-2 mb-4">
+            <div className="space-y-3">
+              {/* Opción WiFi */}
               <button
                 onClick={connectWiFi}
                 disabled={isConnected}
-                className={`btn btn-xs h-8 font-bold gap-2 normal-case transition-all ${isConnected ? 'btn-success text-white' : 'bg-base-200 border-base-300 hover:border-primary'
-                  }`}
+                className={`btn btn-sm w-full font-bold gap-2 normal-case transition-all ${
+                  isConnected ? 'btn-success text-white' : 'bg-base-200 border-base-300 hover:border-primary'
+                }`}
               >
-                <Wifi size={12} /> Wi-Fi
+                <Wifi size={14} /> Wi-Fi (192.168.4.1)
               </button>
-              <button className="btn btn-xs h-8 bg-base-200 border-base-300 font-bold gap-2 normal-case opacity-50 cursor-not-allowed">
-                <Cpu size={12} /> UART
-              </button>
+
+              <div className="divider text-[9px] uppercase font-bold opacity-30">o</div>
+
+              {/* Opción UART con Selector de Puerto */}
+              <div className="flex flex-col gap-2">
+                <div className="flex gap-2">
+                  <select 
+                    className="select select-bordered select-xs flex-1 font-mono text-[10px] focus:outline-none"
+                    value={selectedPort}
+                    onChange={(e) => setSelectedPort(e.target.value)}
+                    disabled={isConnected || availablePorts.length === 0}
+                  >
+                    {availablePorts.length > 0 ? (
+                      availablePorts.map((port) => <option key={port} value={port}>{port}</option>)
+                    ) : (
+                      <option>No hay puertos COM</option>
+                    )}
+                  </select>
+                  <button 
+                    onClick={scanPorts} 
+                    className="btn btn-square btn-xs bg-base-200 border-base-300"
+                    title="Actualizar puertos"
+                  >
+                    <RefreshCw size={12} className={availablePorts.length === 0 ? "animate-pulse" : ""} />
+                  </button>
+                </div>
+                
+                <button 
+                  disabled={isConnected || availablePorts.length === 0}
+                  className="btn btn-xs h-8 bg-base-800 text-white font-bold gap-2 normal-case hover:bg-black"
+                >
+                  <Cpu size={14} /> Conectar UART
+                </button>
+              </div>
             </div>
 
             <button
               onClick={() => navigate('/config/internal')}
-              className="btn btn-primary btn-sm w-full font-bold shadow-md shadow-primary/20"
+              className="btn btn-primary btn-sm w-full font-bold shadow-md shadow-primary/20 mt-4"
             >
               Configurar Actuadores
             </button>
@@ -180,7 +229,6 @@ export function Home() {
               </button>
             </div>
 
-            {/* VISTA DE MENSAJES */}
             <div
               ref={scrollRef}
               className="flex-1 overflow-y-auto p-4 font-mono text-[10px] bg-slate-950/5"
@@ -194,9 +242,10 @@ export function Home() {
                 messages.map((m, i) => (
                   <div key={i} className="mb-1 flex gap-2 animate-in slide-in-from-left-2 duration-300">
                     <span className="text-base-400 font-bold">[{m.time}]</span>
-                    <span className={`font-black ${m.type === 'ERROR' ? 'text-error' :
+                    <span className={`font-black ${
+                      m.type === 'ERROR' ? 'text-error' :
                       m.type === 'SYSTEM' ? 'text-primary' : 'text-success'
-                      }`}>
+                    }`}>
                       {m.type === 'RX' ? '>>' : '::'}
                     </span>
                     <span className="text-base-content break-all">{m.text}</span>
@@ -205,7 +254,6 @@ export function Home() {
               )}
             </div>
 
-            {/* INPUT DE ENVÍO */}
             <div className="p-3 bg-base-200/50 border-t border-base-300">
               <form onSubmit={sendMessage} className="flex gap-2">
                 <input
@@ -218,7 +266,7 @@ export function Home() {
                   className="flex-1 bg-base-100 border border-base-300 rounded-lg px-3 py-1.5 text-xs font-mono outline-none focus:border-primary transition-all"
                 />
                 <button
-                  type="submit" // Cambiado a submit para que funcione con el form
+                  type="submit"
                   disabled={!isConnected || !command.trim()}
                   className="btn btn-square btn-sm btn-primary shadow-sm"
                 >

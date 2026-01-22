@@ -6,6 +6,8 @@ use futures_util::StreamExt;
 use tokio::sync::Mutex;
 use futures_util::SinkExt; // Necesario para .send()
 
+use serialport;
+
 #[tauri::command]
 fn greet(name: &str) -> String {
     format!("Hello, {}! You've been greeted from Rust!", name)
@@ -60,11 +62,19 @@ async fn send_command(state: tauri::State<'_, WsState>, cmd: String) -> Result<(
     }
 }
 
+#[tauri::command]
+fn get_available_ports() -> Vec<String> {
+    match serialport::available_ports() {
+        Ok(ports) => ports.into_iter().map(|p| p.port_name).collect(),
+        Err(_) => Vec::new(),
+    }
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
-        .invoke_handler(tauri::generate_handler![greet, start_wifi_session, send_command])
+        .invoke_handler(tauri::generate_handler![greet, start_wifi_session, send_command, get_available_ports])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
